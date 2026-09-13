@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya Tripathi — All in One</title>
+<style>
+:root{--bg:#070914;--card:#101426;--text:#f5f7ff;--muted:#aab1c7;--a:#6d5dfc;--b:#00d4ff;--border:#202844}
+.light{--bg:#f5f7ff;--card:#fff;--text:#111827;--muted:#596579;--border:#dce2ef}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at 20% 0%,#18205a 0,transparent 35%),var(--bg);color:var(--text);transition:.25s}
+nav{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:15px 7%;background:#080b18dd;backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.logo{font-weight:800;font-size:20px}.logo span{color:var(--b)}button{border:0;border-radius:12px;padding:11px 15px;cursor:pointer;background:linear-gradient(135deg,var(--a),var(--b));color:white;font-weight:700}
+.hero{padding:75px 7% 45px;text-align:center}.badge{display:inline-block;padding:8px 13px;border:1px solid #343c68;border-radius:999px;color:#b9c5ff}
+h1{font-size:clamp(40px,8vw,78px);margin:18px 0 10px;line-height:1.02}h1 span{background:linear-gradient(90deg,var(--b),var(--a));-webkit-background-clip:text;color:transparent}
+.hero p{max-width:680px;margin:0 auto 25px;color:var(--muted);font-size:18px}
+.search{max-width:720px;margin:25px auto;display:flex;gap:10px}.search input,.tool input,.tool textarea{flex:1;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none}
+.container{width:86%;max-width:1100px;margin:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:30px 0}
+.card,.tool{background:linear-gradient(145deg,var(--card),#0b0f20);border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:0 10px 30px #0002}.card h3{margin:10px 0}.card p{color:var(--muted)}.icon{font-size:30px}
+section{padding:35px 0}h2{text-align:center;font-size:32px}.tool{margin:18px 0}.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.calc button{background:#1a2140}.calc .wide{grid-column:span 2}.display{width:100%;padding:15px;border-radius:12px;border:1px solid var(--border);background:#070a15;color:var(--text);font-size:22px;text-align:right}
+.faq details{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;margin:10px 0}.faq summary{cursor:pointer;font-weight:700}
+footer{text-align:center;padding:35px;color:var(--muted);border-top:1px solid var(--border)}a{color:var(--b)}
+@media(max-width:600px){nav{padding:13px 4%}.hero{padding-top:50px}.container{width:92%}.search{flex-direction:column}}
+</style>
+</head>
+<body>
+<nav><div class="logo">ADITYA <span>TRIPATHI</span></div><button onclick="toggleTheme()">☀️ / 🌙</button></nav>
+
+<header class="hero">
+<div class="badge">⚡ All‑in‑One Web App</div>
+<h1>Welcome, <span>Aditya Tripathi</span></h1>
+<p>एक modern जगह जहाँ useful tools, notes, search और आपकी अपनी जानकारी एक ही जगह मिल सके।</p>
+<div class="search"><input id="search" placeholder="यहाँ कुछ खोजें..." oninput="filterCards()"><button onclick="webSearch()">Search</button></div>
+</header>
+
+<main class="container">
+<section>
+<h2>✨ Useful Tools</h2>
+<div class="grid" id="cards">
+<div class="card"><div class="icon">🧮</div><h3>Calculator</h3><p>जल्दी से calculation करें।</p><button onclick="document.getElementById('calculator').scrollIntoView()">Open</button></div>
+<div class="card"><div class="icon">📝</div><h3>Notes</h3><p>अपने notes browser में save करें।</p><button onclick="document.getElementById('notes').scrollIntoView()">Open</button></div>
+<div class="card"><div class="icon">🔎</div><h3>Web Search</h3><p>Google search को नए tab में खोलें।</p><button onclick="webSearch()">Search</button></div>
+<div class="card"><div class="icon">💡</div><h3>Ideas</h3><p>Projects, study और content ideas के लिए जगह।</p></div>
+</div>
+</section>
+
+<section id="calculator">
+<h2>🧮 Calculator</h2>
+<div class="tool">
+<input class="display" id="display" readonly>
+<div class="calc">
+<button onclick="add('7')">7</button><button onclick="add('8')">8</button><button onclick="add('9')">9</button><button onclick="add('/')">÷</button>
+<button onclick="add('4')">4</button><button onclick="add('5')">5</button><button onclick="add('6')">6</button><button onclick="add('*')">×</button>
+<button onclick="add('1')">1</button><button onclick="add('2')">2</button><button onclick="add('3')">3</button><button onclick="add('-')">−</button>
+<button onclick="add('0')">0</button><button onclick="add('.')">.</button><button onclick="calc()">=</button><button onclick="add('+')">+</button>
+<button class="wide" onclick="clearCalc()">Clear</button>
+</div></div>
+</section>
+
+<section id="notes">
+<h2>📝 My Notes</h2>
+<div class="tool"><textarea id="note" rows="7" placeholder="अपने notes यहाँ लिखें..."></textarea><br><br><button onclick="saveNote()">Save Note</button> <button onclick="clearNote()">Clear</button><p id="saved"></p></div>
+</section>
+
+<section>
+<h2>⭐ Why this website?</h2>
+<div class="grid">
+<div class="card"><h3>📱 Mobile Friendly</h3><p>फोन और कंप्यूटर दोनों पर responsive.</p></div>
+<div class="card"><h3>⚡ Fast</h3><p>Basic tools बिना किसी server के browser में चलते हैं.</p></div>
+<div class="card"><h3>🎨 Modern UI</h3><p>Dark neon style और light mode.</p></div>
+</div>
+</section>
+
+<section>
+<h2>💬 Testimonials</h2>
+<div class="grid"><div class="card"><p>“Simple और useful interface!”</p><b>— Visitor</b></div><div class="card"><p>“सब कुछ एक जगह होना काफी helpful है।”</p><b>— User</b></div></div>
+</section>
+
+<section class="faq">
+<h2>❓ FAQ</h2>
+<details><summary>क्या यह मोबाइल पर चलेगी?</summary><p>हाँ, यह responsive है और Chrome में चल सकती है।</p></details>
+<details><summary>क्या Notes save होते हैं?</summary><p>हाँ, notes आपके browser के local storage में save होते हैं।</p></details>
+<details><summary>क्या इसमें और features जोड़ सकते हैं?</summary><p>हाँ। आगे weather, games, AI features, login और दूसरे tools जोड़े जा सकते हैं।</p></details>
+</section>
+
+<section>
+<h2>📩 Contact Me</h2>
+<div class="tool">
+<input id="name" placeholder="आपका नाम"><br><br>
+<input id="email" type="email" placeholder="आपका email"><br><br>
+<textarea id="message" rows="5" placeholder="आपका message"></textarea><br><br>
+<button onclick="sendMessage()">Send</button>
+<p id="contactResult"></p>
+</div>
+</section>
+</main>
+
+<footer>© 2026 Aditya Tripathi • All in One</footer>
+
+<script>
+function toggleTheme(){document.body.classList.toggle('light')}
+function webSearch(){let q=document.getElementById('search').value.trim()||prompt('क्या search करना है?');if(q)window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank')}
+function filterCards(){let q=document.getElementById('search').value.toLowerCase();document.querySelectorAll('#cards .card').forEach(c=>c.style.display=c.innerText.toLowerCase().includes(q)?'block':'none')}
+let expr='';function add(x){expr+=x;document.getElementById('display').value=expr}
+function clearCalc(){expr='';document.getElementById('display').value=''}
+function calc(){try{if(!/^[0-9+*/(). -]+$/.test(expr))throw 0;expr=String(Function('return '+expr)());document.getElementById('display').value=expr}catch(e){document.getElementById('display').value='Error';expr=''}}
+const note=document.getElementById('note'),saved=document.getElementById('saved');note.value=localStorage.getItem('adityaNote')||'';function saveNote(){localStorage.setItem('adityaNote',note.value);saved.textContent='✅ Note saved!'}function clearNote(){note.value='';localStorage.removeItem('adityaNote');saved.textContent=''}
+function sendMessage(){document.getElementById('contactResult').textContent='✅ Message form तैयार है। इसे email/service से connect करने पर messages वास्तव में भेजे जा सकते हैं।'}
+</script>
+</body>
+</html>
