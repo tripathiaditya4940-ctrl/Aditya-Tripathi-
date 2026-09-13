@@ -108,3 +108,161 @@ function sendMessage(){document.getElementById('contactResult').textContent='✅
 </script>
 </body>
 </html>
+<!-- 🎮 OFFLINE GAMES -->
+<section id="offline-games" style="padding:25px">
+<h2>🎮 Offline Games</h2>
+<p>इंटरनेट के बिना खेलने के लिए 4 original games</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+<button onclick="G('sky')">☁️ Sky Dodge</button>
+<button onclick="G('race')">🏎️ Turbo Racing</button>
+<button onclick="G('two')">🔢 2048</button>
+<button onclick="G('battle')">🗺️ Battle Zone</button>
+</div>
+
+<div id="sky" class="gm">
+<h3>☁️ Sky Dodge</h3>
+<canvas id="sc" width="360" height="420"></canvas>
+<p>⬅️ ➡️ से चलाओ</p>
+<button onclick="sm(-1)">⬅️</button>
+<button onclick="sm(1)">➡️</button>
+<button onclick="sr()">Restart</button>
+</div>
+
+<div id="race" class="gm">
+<h3>🏎️ Turbo Racing</h3>
+<canvas id="rc" width="360" height="420"></canvas>
+<p>कार को लेन बदलकर बचाओ</p>
+<button onclick="rm(-1)">⬅️</button>
+<button onclick="rm(1)">➡️</button>
+<button onclick="rr()">Restart</button>
+</div>
+
+<div id="two" class="gm">
+<h3>🔢 2048</h3>
+<div id="b2048"></div>
+<button onclick="mv('l')">⬅️</button>
+<button onclick="mv('u')">⬆️</button>
+<button onclick="mv('d')">⬇️</button>
+<button onclick="mv('r')">➡️</button>
+<button onclick="new2()">Restart</button>
+</div>
+
+<div id="battle" class="gm">
+<h3>🗺️ Battle Zone</h3>
+<canvas id="bc" width="400" height="320"></canvas>
+<p>Map में घूमकर 📦 collect करो</p>
+<button onclick="bm(0,-1)">⬆️</button><br>
+<button onclick="bm(-1,0)">⬅️</button>
+<button onclick="bm(1,0)">➡️</button><br>
+<button onclick="bm(0,1)">⬇️</button>
+<button onclick="br()">Restart</button>
+</div>
+</section>
+
+<style>
+.gm{display:none;margin-top:20px;padding:15px;border-radius:15px;background:#151922;text-align:center}
+.gm canvas{max-width:100%;border-radius:12px;background:#202631}
+#b2048{display:grid;grid-template-columns:repeat(4,65px);gap:6px;justify-content:center;margin:15px}
+#b2048 div{height:65px;background:#303642;border-radius:8px;display:grid;place-items:center;font-size:22px;font-weight:bold}
+</style>
+
+<script>
+function G(x){
+ document.querySelectorAll('.gm').forEach(e=>e.style.display='none');
+ document.getElementById(x).style.display='block';
+}
+
+let sx=document.getElementById("sc"),s=sx.getContext("2d"),px=180,py=370,ob=[],score=0;
+function sr(){px=180;py=370;ob=[];score=0;sd()}
+function sm(d){px=Math.max(15,Math.min(345,px+d*30));sd()}
+function sd(){
+ s.clearRect(0,0,360,420);
+ s.font="30px Arial";s.fillText("🙂",px-15,py);
+ ob.forEach(o=>s.fillText("☄️",o.x,o.y));
+}
+function st(){
+ ob.push({x:Math.random()*340,y:-20});
+ ob.forEach(o=>o.y+=4);
+ ob=ob.filter(o=>o.y<440);
+ for(let o of ob)if(Math.abs(o.x-px)<25&&Math.abs(o.y-py)<25){
+  clearInterval(si);alert("Game Over! Score: "+score);return;
+ }
+ score++;sd();
+}
+let si=setInterval(st,100);sr();
+
+let rx=document.getElementById("rc"),r=rx.getContext("2d"),rl=1,ro=[],rs=0;
+function rr(){rl=1;ro=[];rs=0;clearInterval(ri);ri=setInterval(rt,100);rd()}
+function rm(d){rl=Math.max(0,Math.min(2,rl+d));rd()}
+function rt(){
+ ro.push({l:Math.floor(Math.random()*3),y:-30});
+ ro.forEach(o=>o.y+=5);ro=ro.filter(o=>o.y<450);
+ for(let o of ro)if(o.l==rl&&o.y>350){clearInterval(ri);alert("Race Over! Score: "+rs);return}
+ rs++;rd()
+}
+function rd(){
+ r.clearRect(0,0,360,420);r.fillStyle="#343943";r.fillRect(45,0,270,420);
+ r.strokeStyle="white";r.setLineDash([20,15]);
+ r.beginPath();r.moveTo(135,0);r.lineTo(135,420);r.stroke();
+ r.beginPath();r.moveTo(225,0);r.lineTo(225,420);r.stroke();
+ r.setLineDash([]);r.font="30px Arial";r.fillText("🏎️",65+rl*90,390);
+ ro.forEach(o=>r.fillText("🚗",65+o.l*90,o.y));
+}
+let ri=setInterval(rt,100);rr();
+
+let a=[];
+function new2(){a=Array(16).fill(0);add();add();draw2()}
+function add(){
+ let e=a.map((v,i)=>v?null:i).filter(v=>v!==null);
+ if(e.length)a[e[Math.floor(Math.random()*e.length)]]=2;
+}
+function mv(d){
+ let old=a.join(),rows=[];
+ for(let i=0;i<4;i++)rows.push(a.slice(i*4,i*4+4));
+ if(d=="u"||d=="d")rows=rows[0].map((_,i)=>rows.map(x=>x[i]));
+ if(d=="r")rows=rows.map(x=>x.reverse());
+ if(d=="d")rows=rows.map(x=>x.reverse());
+ rows=rows.map(x=>{
+  x=x.filter(Boolean);
+  for(let i=0;i<x.length-1;i++)if(x[i]==x[i+1]){x[i]*=2;x.splice(i+1,1)}
+  while(x.length<4)x.push(0);return x;
+ });
+ if(d=="r"||d=="d")rows=rows.map(x=>x.reverse());
+ if(d=="u"||d=="d")rows=rows[0].map((_,i)=>rows.map(x=>x[i]));
+ a=rows.flat();if(a.join()!=old)add();draw2()
+}
+function draw2(){
+ let b=document.getElementById("b2048");b.innerHTML="";
+ a.forEach(v=>{let x=document.createElement("div");x.textContent=v||"";b.appendChild(x)})
+}
+new2();
+
+let bx=document.getElementById("bc"),q=bx.getContext("2d"),bp={x:200,y:160},boxes=[],bs=0;
+function br(){
+ bp={x:200,y:160};boxes=[];bs=0;
+ for(let i=0;i<12;i++)boxes.push({x:20+Math.random()*360,y:20+Math.random()*280});
+ bd()
+}
+function bm(x,y){
+ bp.x=Math.max(12,Math.min(388,bp.x+x*22));
+ bp.y=Math.max(12,Math.min(308,bp.y+y*22));
+ boxes=boxes.filter(o=>{
+  if(Math.hypot(o.x-bp.x,o.y-bp.y)<22){bs++;return false}
+  return true
+ });bd()
+}
+function bd(){
+ q.clearRect(0,0,400,320);q.strokeStyle="#555";
+ for(let x=0;x<400;x+=40){q.beginPath();q.moveTo(x,0);q.lineTo(x,320);q.stroke()}
+ for(let y=0;y<320;y+=40){q.beginPath();q.moveTo(0,y);q.lineTo(400,y);q.stroke()}
+ q.font="25px Arial";boxes.forEach(o=>q.fillText("📦",o.x-12,o.y+8));
+ q.fillText("🙂",bp.x-12,bp.y+8);q.font="16px Arial";q.fillText("Crates: "+bs,10,20)
+}
+br();
+
+document.addEventListener("keydown",e=>{
+ if(e.key=="ArrowLeft")sm(-1);
+ if(e.key=="ArrowRight")sm(1);
+});
+</script>
