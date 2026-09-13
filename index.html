@@ -266,3 +266,81 @@ document.addEventListener("keydown",e=>{
  if(e.key=="ArrowRight")sm(1);
 });
 </script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Simple Battle Royale</title>
+ <style>
+ body { margin: 0; overflow: hidden; background: #111; color: white; font-family: sans-serif; text-align: center; }
+ canvas { background: #222; display: block; margin: 10px auto; border: 2px solid #555; }
+ </style>
+</head>
+<body>
+ <h1>Simple Battle Royale - Level 1</h1>
+ <p>Move: WASD/Arrows | Stay inside the shrinking zone!</p>
+ <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+ <script>
+ const canvas = document.getElementById('gameCanvas');
+ const ctx = canvas.getContext('2d');
+
+ const player = { x: 300, y: 300, radius: 15, speed: 4, color: '#00ffcc' };
+ const zone = { x: 300, y: 300, radius: 250, shrinkRate: 0.1 };
+ const keys = {};
+
+ window.addEventListener('keydown', e => keys[e.key] = true);
+ window.addEventListener('keyup', e => keys[e.key] = false);
+
+ function update() {
+ if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
+ if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
+ if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
+ if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
+
+ zone.radius -= zone.shrinkRate;
+
+ // Check if player is outside the zone
+ const distX = player.x - zone.x;
+ const distY = player.y - zone.y;
+ const distance = Math.sqrt(distX * distX + distY * distY);
+
+ if (distance + player.radius > zone.radius) {
+ // Game Over logic can be added here
+ document.body.style.backgroundColor = '#550000';
+ } else {
+ document.body.style.backgroundColor = '#111';
+ }
+ }
+
+ function draw() {
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+ // Draw zone
+ ctx.beginPath();
+ ctx.arc(zone.x, zone.y, zone.radius, 0, Math.PI * 2);
+ ctx.strokeStyle = 'red';
+ ctx.lineWidth = 3;
+ ctx.stroke();
+ ctx.closePath();
+
+ // Draw player
+ ctx.beginPath();
+ ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+ ctx.fillStyle = player.color;
+ ctx.fill();
+ ctx.closePath();
+ }
+
+ function gameLoop() {
+ update();
+ draw();
+ requestAnimationFrame(gameLoop);
+ }
+
+ gameLoop();
+ </script>
+</body>
+</html>
